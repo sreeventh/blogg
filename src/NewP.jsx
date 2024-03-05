@@ -8,7 +8,8 @@ export default function NewP() {
     const [formData, setFormData] = useState({
         title: '',
         content: '',
-        author: ''
+        author: '',
+        type:''
     });
     const Navigate = useNavigate();
 
@@ -62,6 +63,14 @@ export default function NewP() {
                     placeholder="Author"
                     required
                     value={formData.author}
+                    onChange={handleChange}
+                />
+                <input
+                    type="text"
+                    name="type"
+                    placeholder="Type"
+                    required
+                    value={formData.type}
                     onChange={handleChange}
                 />
                 <button className="full-width" onClick={postm}>

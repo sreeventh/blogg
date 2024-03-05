@@ -2,14 +2,17 @@ import React, { useEffect, useState } from "react";
 import Blog from "./comp/Blog";
 import { Link } from "react-router-dom";
 import axios from 'axios';
-import "./comp/Blog.css"
+import "./comp/Blog.css";
 
 export default function App() {
   const apiUrl = "http://localhost:4000/post/";
-
+  
   const [bd, setBd] = useState([]);
+  const uniqueTypes = [...new Set(bd.map(a =>  a.type))];
   const [ed, setEd] = useState({});
   const [edd, setE] = useState(false);
+  const [sp, setSp] = useState(false);
+  const [spdata, setSpdata] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -64,12 +67,47 @@ export default function App() {
     }
   };
 
+  async function showt(t) {
+    const response = await fetch(`http://localhost:4000/filter?type=${t}`)
+    const data = await response.json();
+    console.log(data);
+    setSpdata(data);
+    setSp(true);
+  }
   return (
     <>
+      {sp ? (
+        <>
+          {spdata.map((a) => (
+
+            <Blog
+              key={a.id}
+              title={a.title}
+              content={a.content}
+              date={a.date}
+              auth={a.author}
+              delp={delpost}
+              editp={editpost}
+              id={a.id}
+            />
+          ))}
+
+        </>
+      ) : null}
+
       <h1 style={{ textAlign: "center", marginTop: "20px" }}>MyBlogz!</h1>
       <Link style={{ marginLeft: "400px" }} to="/new">
         <button id="newPostBtn">New Post</button>
       </Link>
+      <div className="dropdown">
+        <button className="dropbtn">Type Of Blogs</button>
+        <div className="dropdown-content">
+          {
+            uniqueTypes.map((a) => (
+              <a onClick={() => showt(a)}>{a}</a>
+          ))}
+        </div>
+      </div>
       {bd.map((a) => (
         <Blog
           key={a.id}
