@@ -9,9 +9,12 @@ export default function App() {
 
   const [bd, setBd] = useState([]);
   const [ed, setEd] = useState({});
-
   const [edd, setE] = useState(false);
-
+  const [formData, setFormData] = useState({
+    title: '',
+    content: '',
+    author: ''
+  });
 
   async function getPosts() {
     const response = await fetch(apiUrl);
@@ -21,7 +24,7 @@ export default function App() {
   }
   useEffect(() => {
     getPosts();
-  }, [])
+  }, []);
 
   async function delpost(id) {
     if (window.confirm("Are you sure?")) {
@@ -37,67 +40,29 @@ export default function App() {
     const data = await response.json();
     console.log(data);
     setEd(data);
+    setFormData(data);
     setE(true);
   }
 
-
-  function EditComp() {
-    // State to hold form data
-    const [formData, setFormData] = useState({
-      title: '',
-      content: '',
-      author: ''
-    });
-
-    // Update state on input change
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData(prevState => ({
-        ...prevState,
-        [name]: value
-      }));
-    };
-    async function epatch(id) {
-      const resp = await axios.patch(`http://localhost:4000/post/${id}`, formData);
-      setE(false);
-      getPosts();
-    }
-    return (
-      <>
-        <div className="container">
-          <h3>Edit Blog Entry: {ed.title}</h3>
-          <input
-            type="text"
-            name="title"
-            placeholder="Title"
-            required
-            defaultValue={ed.title}
-            onChange={handleChange}
-          />
-          <textarea
-            name="content"
-            placeholder="Content"
-            required
-            rows="10"
-            defaultValue={ed.content}
-            onChange={handleChange}
-          ></textarea>
-          <input
-            type="text"
-            name="author"
-            placeholder="Author"
-            required
-            defaultValue={ed.author}
-            onChange={handleChange}
-          />
-          <button className="full-width" onClick={() => epatch(ed.id)}>
-            Submit
-          </button>
-        </div>
-      </>
-    )
+  async function epatch(id) {
+    const resp = await axios.patch(`http://localhost:4000/post/${id}`, formData);
+    setE(false);
+    getPosts();
   }
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      setE(false);
+    }
+  };
 
   return (
     <>
@@ -118,7 +83,38 @@ export default function App() {
         />
       ))}
       {edd && (
-        <EditComp />
+        <div className="overlay" onClick={handleOverlayClick}>
+          <div className="edit-container">
+            <h3>Edit Blog Entry: {ed.title}</h3>
+            <input
+              type="text"
+              name="title"
+              placeholder="Title"
+              required
+              value={formData.title}
+              onChange={handleChange}
+            />
+            <textarea
+              name="content"
+              placeholder="Content"
+              required
+              rows="10"
+              value={formData.content}
+              onChange={handleChange}
+            ></textarea>
+            <input
+              type="text"
+              name="author"
+              placeholder="Author"
+              required
+              value={formData.author}
+              onChange={handleChange}
+            />
+            <button className="full-width" onClick={() => epatch(ed.id)}>
+              Submit
+            </button>
+          </div>
+        </div>
       )}
     </>
   );
