@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./comp/Blog.css";
 import axios from "axios";
+import {useNavigate} from "react-router-dom"
 
 export default function NewP() {
     // State to hold form data
@@ -9,6 +10,7 @@ export default function NewP() {
         content: '',
         author: ''
     });
+    const Navigate = useNavigate();
 
     // Update state on input change
     const handleChange = (e) => {
@@ -25,6 +27,8 @@ export default function NewP() {
         try {
             const resp = await axios.post("http://localhost:4000/post/", formData);
             console.log(resp.data);
+            Navigate("/");
+            
             // Handle success (e.g., clearing form, showing a message)
         } catch (error) {
             console.error("There was an error!", error);
