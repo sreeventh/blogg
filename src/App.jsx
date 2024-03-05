@@ -13,13 +13,13 @@ export default function App() {
   const [edd, setE] = useState(false);
 
 
+  async function getPosts() {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    console.log(data);
+    setBd(data);
+  }
   useEffect(() => {
-    async function getPosts() {
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-      console.log(data);
-      setBd(data);
-    }
     getPosts();
   }, [])
 
@@ -27,7 +27,7 @@ export default function App() {
     if (window.confirm("Are you sure?")) {
       const resp = await axios.delete(`http://localhost:4000/post/${id}`);
       if (resp.status === 200) {
-        window.location.reload();
+        getPosts();
       }
     }
   }
@@ -58,9 +58,9 @@ export default function App() {
       }));
     };
     async function epatch(id) {
-      const resp = await axios.patch(`http://localhost:4000/post/${id}`,formData);
+      const resp = await axios.patch(`http://localhost:4000/post/${id}`, formData);
       setE(false);
-      window.location.reload();
+      getPosts();
     }
     return (
       <>
