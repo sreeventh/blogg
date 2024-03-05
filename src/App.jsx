@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Blog from "./comp/Blog";
 import { Link } from "react-router-dom";
-
+import axios from 'axios';
 
 export default function App() {
   const apiUrl = "http://localhost:4000/post/";
@@ -19,6 +19,16 @@ export default function App() {
     getPosts();
   }, [])
 
+  async function delpost(id){
+    if(window.confirm("Are you sure?")){
+      const resp = await axios.delete(`http://localhost:4000/post/${id}`);
+      if(resp.status === 200){
+        window.location.reload();
+      }
+    }
+  }
+
+
   return (
     <>
       <h1 style={{ textAlign: "center", marginTop: "20px" }}>MyBlogz!</h1>
@@ -31,6 +41,8 @@ export default function App() {
           content={a.content}
           date={a.date}
           auth={a.author}
+          delp = {delpost}
+          id = {a.id}
         />
       ))}
     </>
