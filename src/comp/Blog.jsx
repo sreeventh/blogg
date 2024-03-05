@@ -17,7 +17,7 @@ export default function Blog(props) {
                             {props.content}
                         </p>
                         <small>By: {props.auth}</small>
-                        <a className="edit">Edit</a>
+                        <a onClick={() => props.editp(props.id)} className="edit">Edit</a>
                         <a onClick={() => props.delp(props.id)} className="delete">Delete</a>
                     </li>
                 </ul>
